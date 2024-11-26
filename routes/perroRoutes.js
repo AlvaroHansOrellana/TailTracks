@@ -6,37 +6,36 @@ const validationMiddleware = require('../middlewares/validationMiddleware');
 
 const router = express.Router();
 
-// Obtener todos los perros del usuario autenticado
-router.get('/', authMiddleware, perroController.getAllDogs);
-
-// Obtener un perro por ID
-router.get('/:id_perro', authMiddleware, perroController.getDogById);
-
-// Crear un perro
+// Crear un nuevo perro
 router.post(
     '/',
     [
-        body('nombre').notEmpty().withMessage('El nombre es obligatorio'),
-        body('edad').isInt({ min: 0 }).withMessage('La edad debe ser un número entero no negativo'),
-        body('raza').notEmpty().withMessage('La raza es obligatoria'),
-        body('peso').isFloat({ min: 0 }).withMessage('El peso debe ser un número positivo'),
-        body('comportamiento').notEmpty().withMessage('El comportamiento es obligatorio'),
+        body('nombre').isString().withMessage('El nombre es requerido y debe ser un texto.'),
+        body('raza').isString().withMessage('La raza es requerida y debe ser un texto.'),
+        body('edad').isInt({ min: 0 }).withMessage('La edad debe ser un número entero mayor o igual a 0.'),
+        body('peso').isFloat({ gt: 0 }).withMessage('El peso debe ser un número mayor a 0.'),
+        body('foto').isURL().withMessage('La foto debe ser una URL válida.'),
+        body('comportamiento').isString().withMessage('El comportamiento debe ser un texto.'),
     ],
     authMiddleware,
     validationMiddleware,
     perroController.createDog
 );
 
+// Obtener todos los perros
+router.get('/', authMiddleware, perroController.getAllDogs);
+
 // Actualizar un perro
 router.put(
     '/:id_perro',
     [
-        param('id_perro').isInt().withMessage('El ID del perro debe ser un número entero'),
-        body('nombre').optional().notEmpty().withMessage('El nombre no puede estar vacío'),
-        body('edad').optional().isInt({ min: 0 }).withMessage('La edad debe ser un número entero no negativo'),
-        body('raza').optional().notEmpty().withMessage('La raza no puede estar vacía'),
-        body('peso').optional().isFloat({ min: 0 }).withMessage('El peso debe ser un número positivo'),
-        body('comportamiento').optional().notEmpty().withMessage('El comportamiento no puede estar vacío'),
+        param('id_perro').isInt().withMessage('El ID del perro debe ser un número entero.'),
+        body('nombre').optional().isString().withMessage('El nombre debe ser un texto.'),
+        body('raza').optional().isString().withMessage('La raza debe ser un texto.'),
+        body('edad').optional().isInt({ min: 0 }).withMessage('La edad debe ser un número entero mayor o igual a 0.'),
+        body('peso').optional().isFloat({ gt: 0 }).withMessage('El peso debe ser un número mayor a 0.'),
+        body('foto').optional().isURL().withMessage('La foto debe ser una URL válida.'),
+        body('comportamiento').optional().isString().withMessage('El comportamiento debe ser un texto.'),
     ],
     authMiddleware,
     validationMiddleware,
@@ -44,6 +43,11 @@ router.put(
 );
 
 // Eliminar un perro
-router.delete('/:id_perro', authMiddleware, perroController.deleteDog);
+router.delete(
+    '/:id_perro',
+    param('id_perro').isInt().withMessage('El ID del perro debe ser un número entero.'),
+    authMiddleware,
+    perroController.deleteDog
+);
 
 module.exports = router;

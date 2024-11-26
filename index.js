@@ -4,11 +4,12 @@ const dotenv = require('dotenv');
 const path = require('path');
 const db = require('./config/db'); // Conexión a la base de datos
 const helmet = require ('helmet');
+
 // ! Import de middelwares
 const requestLogger = require('./middlewares/requestLogger');
 const manage404 = require('./middlewares/manage404');
 const errorHandler = require('./middlewares/errorHandler');
-const validationMiddleware = require('./middlewares/validationMiddleware')
+
 
 const routes = require('./routes'); // Archivo central de rutas para tenerlo bien organizadito bb
 
@@ -19,11 +20,11 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Base de datos: Ejemplo de inicialización
-db.query(
-    "INSERT INTO Usuario (nombre, email, contraseña, ubicacion, telefono) VALUES ('Juan Pérez', 'pedros@example.com', '123456', 'Madrid', '123456789')"
-)
-    .then(() => console.log('Datos insertados correctamente'))
-    .catch((err) => console.error('Error al insertar datos:', err));
+// db.query(
+//     "INSERT INTO Usuario (nombre, email, contraseña, ubicacion, telefono) VALUES ('Carlitos', 'pepitos22@example.com', '1234567', 'Madrid', '123456789')"
+// )
+//     .then(() => console.log('Datos insertados correctamente'))
+//     .catch((err) => console.error('Error al insertar datos:', err));
 
 // ! Uso de los Middlewares
 app.use(express.json()); // Parseo de JSON

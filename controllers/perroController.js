@@ -23,20 +23,31 @@ const getDogById = async (req, res) => {
     }
 };
 
-// Crear un perro
+// Crear un nuevo perro
 const createDog = async (req, res) => {
     try {
-        const dog = await perroModel.createDog({ ...req.body, id_usuario: req.user.id_usuario });
+        const { nombre, raza, edad, peso, foto, comportamiento } = req.body;
+        const dog = await perroModel.createDog({
+            nombre,
+            raza,
+            edad,
+            peso,
+            foto,
+            comportamiento,
+            id_usuario: req.user.id_usuario,
+        });
         res.status(201).json(dog);
     } catch (err) {
         res.status(500).json({ message: 'Error al crear el perro', error: err });
     }
 };
 
-// Actualizar un perro
+// Actualizar un perro existente
 const updateDog = async (req, res) => {
     try {
-        const updatedDog = await perroModel.updateDog(req.params.id_perro, req.body);
+        const { id_perro } = req.params;
+        const updates = req.body;
+        const updatedDog = await perroModel.updateDog(id_perro, updates);
         res.json(updatedDog);
     } catch (err) {
         res.status(500).json({ message: 'Error al actualizar el perro', error: err });
@@ -46,7 +57,8 @@ const updateDog = async (req, res) => {
 // Eliminar un perro
 const deleteDog = async (req, res) => {
     try {
-        await perroModel.deleteDog(req.params.id_perro);
+        const { id_perro } = req.params;
+        await perroModel.deleteDog(id_perro);
         res.status(204).send();
     } catch (err) {
         res.status(500).json({ message: 'Error al eliminar el perro', error: err });

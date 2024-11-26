@@ -1,54 +1,54 @@
 const db = require('../config/db');
 
-// Obtener todos los perros de un usuario
-const getAllDogsByUser = async (id_usuario) => {
-    const query = 'SELECT * FROM perros WHERE id_usuario = $1';
-    const { rows } = await db.query(query, [id_usuario]);
-    return rows;
-};
-
-// Obtener un perro por ID
-const getDogById = async (id_perro) => {
-    const query = 'SELECT * FROM perros WHERE id_perro = $1';
-    const { rows } = await db.query(query, [id_perro]);
-    return rows[0];
-};
-
 // Crear un nuevo perro
-const createDog = async (perro) => {
-    const { id_usuario, nombre, edad, raza, peso, comportamiento } = perro;
+const createDog = async ({ nombre, raza, edad, peso, foto, comportamiento }) => {
     const query = `
-        INSERT INTO perros (id_usuario, nombre, edad, raza, peso, comportamiento)
+        INSERT INTO Perro (nombre, raza, edad, peso, foto, comportamiento)
         VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING *
+        RETURNING *;
     `;
-    const { rows } = await db.query(query, [id_usuario, nombre, edad, raza, peso, comportamiento]);
-    return rows[0];
+    const result = await db.query(query, [nombre, raza, edad, peso, foto, comportamiento]);
+    return result.rows[0];
+};
+
+// Obtener todos los perros
+const getAllDogs = async () => {
+    const query = `
+        SELECT * FROM Perro;
+    `;
+    const result = await db.query(query);
+    return result.rows;
 };
 
 // Actualizar un perro
-const updateDog = async (id_perro, perro) => {
-    const { nombre, edad, raza, peso, comportamiento } = perro;
+const updateDog = async (id_perro, updates) => {
+    const setQuery = Object.keys(updates)
+        .map((key, index) => `${key} = $${index + 2}`)
+        .join(', ');
+
     const query = `
-        UPDATE perros
-        SET nombre = $1, edad = $2, raza = $3, peso = $4, comportamiento = $5
-        WHERE id_perro = $6
-        RETURNING *
+        UPDATE Perro
+        SET ${setQuery}
+        WHERE id_perro = $1
+        RETURNING *;
     `;
-    const { rows } = await db.query(query, [nombre, edad, raza, peso, comportamiento, id_perro]);
-    return rows[0];
+    const values = [id_perro, ...Object.values(updates)];
+    const result = await db.query(query, values);
+    return result.rows[0];
 };
 
 // Eliminar un perro
 const deleteDog = async (id_perro) => {
-    const query = 'DELETE FROM perros WHERE id_perro = $1';
+    const query = `
+        DELETE FROM Perro
+        WHERE id_perro = $1;
+    `;
     await db.query(query, [id_perro]);
 };
 
 module.exports = {
-    getAllDogsByUser,
-    getDogById,
     createDog,
+    getAllDogs,
     updateDog,
     deleteDog,
 };
