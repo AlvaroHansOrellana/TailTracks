@@ -29,6 +29,7 @@ app.use(express.json()); // Parseo de JSON
 app.use(express.urlencoded({ extended: true })); // Parseo de datos URL-encoded
 app.use(cookieParser()); // Parseo de cookies
 app.use(requestLogger);
+app.use(errorHandler);
 app.use('/public', express.static(path.join(__dirname, 'public'))); // Archivos estáticos
 
 // ! Registrar Rutas
