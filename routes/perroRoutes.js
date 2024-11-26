@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const perroController = require('../controllers/perroController');
+const perroController = require('../controllers/perroController.js');
 const authMiddleware = require('../middlewares/authMiddleware');
 
 // Obtener todos los perros del usuario autenticado
