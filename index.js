@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const path = require('path');
 const db = require('./config/db'); // Conexión a la base de datos
+const helmet = require ('helmet');
 // ! Import de middelwares
 const requestLogger = require('./middlewares/requestLogger');
 const manage404 = require('./middlewares/manage404');
@@ -31,6 +32,7 @@ app.use(cookieParser()); // Parseo de cookies
 app.use(requestLogger);
 app.use(errorHandler);
 app.use('/public', express.static(path.join(__dirname, 'public'))); // Archivos estáticos
+app.use(helmet());
 
 // ! Registrar Rutas
 app.use('/api', routes);

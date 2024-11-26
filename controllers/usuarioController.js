@@ -3,8 +3,9 @@ const bcrypt = require('bcrypt');
 const { generateToken } = require('../utils/tokenService');
 const CustomError = require('../utils/customError');
 
+// Validaciones con Regex
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
 
 // Obtener todos los usuarios
 const getAllUsers = async (req, res, next) => {
@@ -39,7 +40,7 @@ const registerUser = async (req, res, next) => {
         }
         if (!passwordRegex.test(contraseña)) {
             throw new CustomError(
-                'La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas y un número.',
+                'La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, un número y un carácter especial (!@#$%^&*).',
                 400
             );
         }
@@ -111,3 +112,4 @@ module.exports = {
     updateUser,
     deleteUser,
 };
+    
