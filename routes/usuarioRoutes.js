@@ -4,16 +4,13 @@ const router = express.Router();
 
 
 // Get todos los dichosos usuarios
-router.get('/', usuarioController.getAllUsers);  // !
-router.get('/:email', usuarioController.getUserByEmail); // !
+router.get('/', usuarioController.getAllUsers);  // ! working
+router.get('/:email', usuarioController.getUserByEmail); // ! working
+router.post('/', usuarioController.createUser); // ! working
+router.put('/:email', usuarioController.updateUser); // !! working
+router.delete('/:email', usuarioController.deleteUser); // ! working
 
-router.post('/', usuarioController.createUser);
 
-
-
-router.put('/:email', usuarioController.updateUser); // Sin terminar
-router.delete('/:email', usuarioController.deleteUser);
-//
 
 module.exports = router;
 

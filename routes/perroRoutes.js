@@ -1,15 +1,40 @@
 const express = require('express');
-const { body, param } = require('express-validator');
 const perroController = require('../controllers/perroController');
-const authMiddleware = require('../middlewares/authMiddleware');
-const validationMiddleware = require('../middlewares/validationMiddleware');
-
 const router = express.Router();
 
 
+
 // Obtener todos los perros
-router.get('/', perroController.getAllDogs);
-// router.get('/', authMiddleware, perroController.getAllDogs);
+router.get('/', perroController.getAllDogs);  // !
+router.get('/:nombre', perroController.getDogByName); // !!
+router.post('/', perroController.createDog); // ! 
+router.delete('/:id_perro', perroController.deleteDog); // ! Delete por Id de perro
+
+
+
+
+module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Crear un nuevo perro
 // router.post(
@@ -53,4 +78,10 @@ router.get('/', perroController.getAllDogs);
 //     perroController.deleteDog
 // );
 
-module.exports = router;
+
+
+// const authMiddleware = require('../middlewares/authMiddleware');
+// const validationMiddleware = require('../middlewares/validationMiddleware');
+// const { body, param } = require('express-validator');
+
+

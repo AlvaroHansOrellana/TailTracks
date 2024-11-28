@@ -12,8 +12,7 @@ const getAllUsers = async (req, res, next) => {
     }
 };
 
-// Ubicar por correo
-
+// ! Ubicar por correo
 const getUserByEmail = async (req, res) => {
     try {
         const usuarioEmail = req.params.email
@@ -34,7 +33,7 @@ const getUserByEmail = async (req, res) => {
     }
 };
 
-// !!!!
+// !!!! Create user ===> working
 const createUser = async (req, res) => {
     console.log('Controller: Received request body:', req.body);
 
@@ -58,50 +57,51 @@ const createUser = async (req, res) => {
 
 
 
-//ACTUALIZAR
+//! working ==> ACTUALIZAR
 const updateUser = async (req, res) => {
     try {
-        const usuarioId = req.params.email
+        const { email } = req.params; // Email desde la URL
+        const { nombre, password, telefono, ubicacion } = req.body; // Datos desde el body
 
-        if (!usuarioId) {
-            return res.status(400).json({ message: 'Se requiere un ID para eliminar un usuario' });
+        if (!email) {
+            return res.status(400).json({ message: 'Se requiere un email para actualizar el usuario' });
         }
 
-        console.log(`Intentando borrar el usuario con email: ${usuarioId}`);
+        console.log(`Intentando actualizar el usuario con email: ${email}`);
 
-        const result = await usuarioModel.updateUser(usuarioId);
+        const result = await usuarioModel.updateUser({ email, nombre, password, telefono, ubicacion });
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: `No se encontró ningún usuario con el ID: ${usuarioId}` });
+        if (result.rowCount === 0) { // Usamos rowCount para verificar filas afectadas
+            return res.status(404).json({ message: `No se encontró ningún usuario con el email: ${email}` });
         }
 
-        res.status(200).json({ message: `Se ha borrado el usuario con ID: ${usuarioId}` });
+        res.status(200).json({ message: `El usuario con email: ${email} ha sido actualizado correctamente` });
     } catch (error) {
-        console.error('Error al eliminar usuario:', error);
-        res.status(500).json({ message: 'Error al eliminar el usuario' });
+        console.error('Error al actualizar el usuario:', error);
+        res.status(500).json({ message: 'Error al actualizar el usuario' });
     }
 };
 
-//BORRAR
+// !! BORRAR
 const deleteUser = async (req, res) => {
     try {
-        const usuarioId = req.params.email
+        const { email } = req.params; // Email desde el parámetro de la URL
 
-        if (!usuarioId) {
-            return res.status(400).json({ message: 'Se requiere un ID para eliminar un usuario' });
+        if (!email) {
+            return res.status(400).json({ message: 'Se requiere un email para eliminar un usuario' });
         }
 
-        console.log(`Intentando borrar el usuario con ID: ${usuarioId}`);
+        console.log(`Intentando eliminar el usuario con email: ${email}`);
 
-        const result = await usuarioModel.deleteUser(usuarioId);
+        const result = await usuarioModel.deleteUser(email);
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: `No se encontró ningún usuario con el ID: ${usuarioId}` });
+        if (result.rowCount === 0) { // Verifica si se eliminó alguna fila
+            return res.status(404).json({ message: `No se encontró ningún usuario con el email: ${email}` });
         }
 
-        res.status(200).json({ message: `Se ha borrado el usuario con ID: ${usuarioId}` });
+        res.status(200).json({ message: `El usuario con email: ${email} ha sido eliminado correctamente` });
     } catch (error) {
-        console.error('Error al eliminar usuario:', error);
+        console.error('Error al eliminar el usuario:', error);
         res.status(500).json({ message: 'Error al eliminar el usuario' });
     }
 };

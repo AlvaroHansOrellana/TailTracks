@@ -9,9 +9,9 @@ const queries = {
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *`,
     updateUser: `
-      UPDATE usuario
-      SET nombre = $1, email = $2, password = $3, telefono = $4, ubicacion = $5
-      WHERE email = $2`,
+        UPDATE usuario
+        SET nombre = $1, password = $2, telefono = $3, ubicacion = $4
+        WHERE email = $5`,
     deleteUser: `
       DELETE FROM usuario
       WHERE email = $1`,

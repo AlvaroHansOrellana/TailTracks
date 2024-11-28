@@ -1,54 +1,75 @@
-const db = require('../config/db');
+const pool = require('../config/db');
+const queries = require('../queries/perroQueries')
 
-// Crear un nuevo perro
-const createDog = async ({ nombre, raza, edad, peso, foto, comportamiento }) => {
-    const query = `
-        INSERT INTO Perro (nombre, raza, edad, peso, foto, comportamiento)
-        VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING *;
-    `;
-    const result = await db.query(query, [nombre, raza, edad, peso, foto, comportamiento]);
-    return result.rows[0];
-};
 
-// Obtener todos los perros
+// !! Obtener todos los perros
 const getAllDogs = async () => {
-    const query = `
-        SELECT * FROM Perro;
-    `;
-    const result = await db.query(query);
-    return result.rows;
+    let client, result;
+    try {
+        client = await pool.connect();
+        const data = await client.query(queries.getAllDogs)
+        result = data.rows
+    } catch (err) {
+        console.log(err);
+        throw err;
+    } finally {
+        client.release();
+    }
+    return result
 };
 
-// Actualizar un perro
-const updateDog = async (id_perro, updates) => {
-    const setQuery = Object.keys(updates)
-        .map((key, index) => `${key} = $${index + 2}`)
-        .join(', ');
+// ! Obtener perro por nombre
+const getDogByName = async (nombre) => {
+    console.log();
 
-    const query = `
-        UPDATE Perro
-        SET ${setQuery}
-        WHERE id_perro = $1
-        RETURNING *;
-    `;
-    const values = [id_perro, ...Object.values(updates)];
-    const result = await db.query(query, values);
-    return result.rows[0];
+    let client, result;
+    try {
+        client = await pool.connect(); // Espera a abrir conexion
+        const data = await client.query(queries.getDogByName, [nombre])
+        result = data.rows
+
+    } catch (err) {
+        console.log(err);
+        throw err;
+    } finally {
+        client.release();
+    }
+    return result
 };
 
-// Eliminar un perro
-const deleteDog = async (id_perro) => {
-    const query = `
-        DELETE FROM Perro
-        WHERE id_perro = $1;
-    `;
-    await db.query(query, [id_perro]);
+// !! 
+async function createDog({ id_usuario, nombre, edad, raza, peso, foto, comportamiento }) {
+    try {
+        const values = [id_usuario, nombre, edad, raza, peso, foto, comportamiento];
+        console.log('Model: Executing query with values:', values);
+        const result = await pool.query(queries.createDog, values);
+        console.log('Model: Query result:', result);
+        return result.rows[0];
+    } catch (err) {
+        console.error("Error executing createDog:", err);
+        console.error("Error details:", err.detail);
+        throw err;
+    }
 };
+
+// ! Working 
+async function deleteDog(id_perro) {
+    try {
+        console.log('Model: Deleting dog with ID:', id_perro);
+        const result = await pool.query(queries.deleteDog, [id_perro]);
+        console.log('Model: Delete result:', result);
+        return result;
+    } catch (err) {
+        console.error("Error executing deleteDog:", err);
+        throw err;
+    }
+};
+
+
 
 module.exports = {
-    createDog,
-    getAllDogs,
-    updateDog,
-    deleteDog,
+     getAllDogs,
+     getDogByName,
+     createDog,
+     deleteDog
 };
