@@ -1,4 +1,4 @@
-const db = require('../db');
+const db = require('../config/db');
 
 // Obtener todos los pagos de un usuario
 const getAllPaymentsByUser = async (id_usuario) => {

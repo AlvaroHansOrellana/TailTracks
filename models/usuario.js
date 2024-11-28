@@ -1,54 +1,97 @@
-const db = require('../config/db');
+const queries = require('../queries/usuarioQueries') // Queries SQL
+const pool = require('../config/db');
 
-// Obtener todos los usuarios
+// GET
+const getUserByEmail = async (email) => {
+    console.log();
+
+    let client, result;
+    try {
+        client = await pool.connect(); // Espera a abrir conexion
+        const data = await client.query(queries.getUSerByEmail, [email])
+        result = data.rows
+
+    } catch (err) {
+        console.log(err);
+        throw err;
+    } finally {
+        client.release();
+    }
+    return result
+}
+
+// !! GET 
 const getAllUsers = async () => {
-    const query = 'SELECT id_usuario, nombre, email, telefono, ubicacion FROM usuarios';
-    const { rows } = await db.query(query);
-    return rows;
+    let client, result;
+    try {
+        client = await pool.connect();
+        const data = await client.query(queries.getAllUsers)
+        result = data.rows
+    } catch (err) {
+        console.log(err);
+        throw err;
+    } finally {
+        client.release();
+    }
+    return result
 };
 
-// Obtener un usuario por ID
-const getUserById = async (id_usuario) => {
-    const query = 'SELECT id_usuario, nombre, email, telefono, ubicacion FROM usuarios WHERE id_usuario = $1';
-    const { rows } = await db.query(query, [id_usuario]);
-    return rows[0];
+// ! POST
+async function createUser({ nombre, email, password, telefono, ubicacion }) {
+    try {
+        const values = [nombre, email, password, telefono, ubicacion];
+        console.log('Model: Executing query with values:', values);
+        const result = await pool.query(queries.createUser, values);
+        console.log('Model: Query result:', result);
+        return result.rows[0];
+    } catch (err) {
+        console.error("Error executing createUser:", err);
+        console.error("Error details:", err.detail);
+        throw err;
+    }
+}
+
+//UPDATE
+const updateUser = async (email) => {
+    let client, result;
+    try {
+        client = await pool.connect(); // Espera a abrir conexion
+        const data = await client.query(queries.updateUser, [email])
+        result = data.rows
+
+    } catch (err) {
+        console.log(err);
+        throw err;
+    } finally {
+        client.release();
+    }
+    return result
 };
 
-// Crear un nuevo usuario
-const createUser = async (usuario) => {
-    const { nombre, email, contraseña, telefono, ubicacion } = usuario;
-    const query = `
-        INSERT INTO usuarios (nombre, email, contraseña, telefono, ubicacion)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id_usuario, nombre, email, telefono, ubicacion
-    `;
-    const { rows } = await db.query(query, [nombre, email, contraseña, telefono, ubicacion]);
-    return rows[0];
+
+// DELETE
+const deleteUser = async (usuarioId) => {
+    let client, result;
+    try {
+        client = await pool.connect(); // Espera a abrir conexion
+        const data = await client.query(queries.deleteUser, [usuarioId])
+        result = data.rows
+
+    } catch (err) {
+        console.log(err);
+        throw err;
+    } finally {
+        client.release();
+    }
+    return result
 };
 
-// Actualizar un usuario
-const updateUser = async (id_usuario, usuario) => {
-    const { nombre, email, telefono, ubicacion } = usuario;
-    const query = `
-        UPDATE usuarios
-        SET nombre = $1, email = $2, telefono = $3, ubicacion = $4
-        WHERE id_usuario = $5
-        RETURNING id_usuario, nombre, email, telefono, ubicacion
-    `;
-    const { rows } = await db.query(query, [nombre, email, telefono, ubicacion, id_usuario]);
-    return rows[0];
-};
 
-// Eliminar un usuario
-const deleteUser = async (id_usuario) => {
-    const query = 'DELETE FROM usuarios WHERE id_usuario = $1';
-    await db.query(query, [id_usuario]);
-};
 
 module.exports = {
+    getUserByEmail,
     getAllUsers,
-    getUserById,
     createUser,
     updateUser,
-    deleteUser,
+    deleteUser
 };

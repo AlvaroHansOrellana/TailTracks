@@ -10,19 +10,6 @@ const getAllDogs = async (req, res) => {
     }
 };
 
-// Obtener un perro por ID
-const getDogById = async (req, res) => {
-    try {
-        const dog = await perroModel.getDogById(req.params.id_perro);
-        if (!dog) {
-            return res.status(404).json({ message: 'Perro no encontrado' });
-        }
-        res.json(dog);
-    } catch (err) {
-        res.status(500).json({ message: 'Error al obtener el perro', error: err });
-    }
-};
-
 // Crear un nuevo perro
 const createDog = async (req, res) => {
     try {
@@ -65,10 +52,23 @@ const deleteDog = async (req, res) => {
     }
 };
 
+// Obtener un perro por ID
+// const getDogById = async (req, res) => {
+//     try {
+//         const dog = await perroModel.getDogById(req.params.id_perro);
+//         if (!dog) {
+//             return res.status(404).json({ message: 'Perro no encontrado' });
+//         }
+//         res.json(dog);
+//     } catch (err) {
+//         res.status(500).json({ message: 'Error al obtener el perro', error: err });
+//     }
+// };
+
 module.exports = {
     getAllDogs,
-    getDogById,
     createDog,
     updateDog,
     deleteDog,
+    // getDogById,
 };

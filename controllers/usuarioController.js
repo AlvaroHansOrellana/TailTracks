@@ -1,13 +1,8 @@
 const usuarioModel = require('../models/usuario');
-const bcrypt = require('bcrypt');
-const { generateToken } = require('../utils/tokenService');
-const CustomError = require('../utils/customError');
 
-// Validaciones con Regex
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
 
-// Obtener todos los usuarios
+
+// ! Obtener todos los usuarios 
 const getAllUsers = async (req, res, next) => {
     try {
         const users = await usuarioModel.getAllUsers();
@@ -17,99 +12,112 @@ const getAllUsers = async (req, res, next) => {
     }
 };
 
-// Obtener perfil del usuario autenticado
-const getUserProfile = async (req, res, next) => {
+// Ubicar por correo
+
+const getUserByEmail = async (req, res) => {
     try {
-        const user = await usuarioModel.getUserById(req.user.id_usuario);
-        if (!user) {
-            throw new CustomError('Usuario no encontrado', 404);
+        const usuarioEmail = req.params.email
+
+        if (!usuarioEmail) {
+            return res.status(400).json({ message: 'Se requiere un ID para eliminar un usuario' });
         }
-        res.json(user);
-    } catch (err) {
-        next(err);
+        const result = await usuarioModel.getUserByEmail(usuarioEmail);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: `No se encontró ningún usuario con el email: ${usuarioEmail}` });
+        }
+
+        res.status(200).json({ usuario: result });
+    } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+        res.status(500).json({ message: 'Error al eliminar el usuario' });
     }
 };
 
-// Registrar un usuario
-const registerUser = async (req, res, next) => {
+// !!!!
+const createUser = async (req, res) => {
+    console.log('Controller: Received request body:', req.body);
+
+    const { nombre, email, password, telefono, ubicacion } = req.body || {};
+
+    if (!nombre || !email || !password || !telefono || !ubicacion) {
+        return res.status(400).json({ success: false, message: "Todos los campos son obligatorios" });
+    }
+
     try {
-        const { nombre, email, contraseña, telefono, ubicacion } = req.body;
+        const newUser = { nombre, email, password, telefono, ubicacion };
+        const response = await usuarioModel.createUser(newUser);
 
-        if (!emailRegex.test(email)) {
-            throw new CustomError('Formato de email inválido', 400);
-        }
-        if (!passwordRegex.test(contraseña)) {
-            throw new CustomError(
-                'La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, un número y un carácter especial (!@#$%^&*).',
-                400
-            );
-        }
-
-        const hashedPassword = await bcrypt.hash(contraseña, 10);
-        const user = await usuarioModel.createUser({
-            nombre,
-            email,
-            contraseña: hashedPassword,
-            telefono,
-            ubicacion,
-        });
-
-        res.status(201).json({ message: 'Usuario registrado exitosamente', user });
-    } catch (err) {
-        next(err);
+        res.status(201).json({ success: true, newUser: response });
+    } catch (error) {
+        console.error("Error al crear el usuario:", error);
+        res.status(400).json({ success: false, message: error.message || "Error al crear el usuario" });
     }
 };
 
-// Iniciar sesión
-const loginUser = async (req, res, next) => {
-    try {
-        const { email, contraseña } = req.body;
 
-        const user = await usuarioModel.getUserById(email);
-        if (!user) {
-            throw new CustomError('Credenciales inválidas', 400);
+
+
+//ACTUALIZAR
+const updateUser = async (req, res) => {
+    try {
+        const usuarioId = req.params.email
+
+        if (!usuarioId) {
+            return res.status(400).json({ message: 'Se requiere un ID para eliminar un usuario' });
         }
 
-        const isMatch = await bcrypt.compare(contraseña, user.contraseña);
-        if (!isMatch) {
-            throw new CustomError('Credenciales inválidas', 400);
+        console.log(`Intentando borrar el usuario con email: ${usuarioId}`);
+
+        const result = await usuarioModel.updateUser(usuarioId);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: `No se encontró ningún usuario con el ID: ${usuarioId}` });
         }
 
-        const token = generateToken({ id_usuario: user.id_usuario });
-        res.json({ message: 'Inicio de sesión exitoso', token });
-    } catch (err) {
-        next(err);
+        res.status(200).json({ message: `Se ha borrado el usuario con ID: ${usuarioId}` });
+    } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+        res.status(500).json({ message: 'Error al eliminar el usuario' });
     }
 };
 
-// Actualizar usuario
-const updateUser = async (req, res, next) => {
+//BORRAR
+const deleteUser = async (req, res) => {
     try {
-        const { id_usuario } = req.params;
-        const updatedUser = await usuarioModel.updateUser(id_usuario, req.body);
-        res.json(updatedUser);
-    } catch (err) {
-        next(err);
+        const usuarioId = req.params.email
+
+        if (!usuarioId) {
+            return res.status(400).json({ message: 'Se requiere un ID para eliminar un usuario' });
+        }
+
+        console.log(`Intentando borrar el usuario con ID: ${usuarioId}`);
+
+        const result = await usuarioModel.deleteUser(usuarioId);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: `No se encontró ningún usuario con el ID: ${usuarioId}` });
+        }
+
+        res.status(200).json({ message: `Se ha borrado el usuario con ID: ${usuarioId}` });
+    } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+        res.status(500).json({ message: 'Error al eliminar el usuario' });
     }
 };
 
-// Eliminar usuario
-const deleteUser = async (req, res, next) => {
-    try {
-        const { id_usuario } = req.params;
-        await usuarioModel.deleteUser(id_usuario);
-        res.status(204).send();
-    } catch (err) {
-        next(err);
-    }
-};
 
 module.exports = {
     getAllUsers,
-    getUserProfile,
-    registerUser,
-    loginUser,
-    updateUser,
+    createUser,
     deleteUser,
+    updateUser,
+    getUserByEmail
 };
-    
+
+
+
+
+// Validaciones con Regex
+// const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
