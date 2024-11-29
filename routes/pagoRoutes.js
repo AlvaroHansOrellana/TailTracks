@@ -1,16 +1,33 @@
 const express = require('express');
-// const { body, param, query } = require('express-validator');
+const router = express.Router();
 const pagoController = require('../controllers/pagoController');
+
+
+
+// Obtener todos los pagos
+router.get('/', pagoController.getAllPayments);
+// Crear un nuevo pago
+router.post('/', pagoController.createPayment);
+// Eliminar un pago
+router.delete('/:id_pago', pagoController.deletePayment);
+
+module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const { body, param, query } = require('express-validator');
 // const authMiddleware = require('../middlewares/authMiddleware');
 // const validationMiddleware = require('../middlewares/validationMiddleware');
-
-const router = express.Router();
-
-
-
-
-
-
 // // Obtener todos los pagos del usuario autenticado con filtros opcionales y paginación
 // router.get(
 //     '/',
@@ -89,4 +106,4 @@ const router = express.Router();
 //     pagoController.deletePayment
 // );
 
-module.exports = router;
+

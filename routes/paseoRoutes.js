@@ -1,15 +1,22 @@
 const express = require('express');
-// const { body, param } = require('express-validator');
 const paseoController = require('../controllers/paseoController');
-// const authMiddleware = require('../middlewares/authMiddleware');
-// const validationMiddleware = require('../middlewares/validationMiddleware');
-
 const router = express.Router();
 
 
-
 // Obtener todos los paseos
-router.get('/', paseoController.getAllWalks);
+router.get('/', paseoController.getAllWalks); // !
+router.post('/', paseoController.createWalk); // !
+router.delete('/:id_paseo', paseoController.deleteWalk);  // !! Delete por el Id del paseo
+
+
+module.exports = router;
+
+
+
+
+
+
+
 
 // // Crear un paseo
 // router.post(
@@ -35,4 +42,8 @@ router.get('/', paseoController.getAllWalks);
 //     paseoController.deleteWalk
 // );
 
-module.exports = router;
+// const { body, param } = require('express-validator');
+// const authMiddleware = require('../middlewares/authMiddleware');
+// const validationMiddleware = require('../middlewares/validationMiddleware');
+
+

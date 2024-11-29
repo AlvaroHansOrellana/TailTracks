@@ -1,29 +1,36 @@
-const db = require('../config/db');
+const pool = require('../config/db');
+const queries = require('../queries/paseoQueries')
 
-// Obtener todos los paseos disponibles
-const getAllWalks = async () => {
-    const query = 'SELECT * FROM paseo';
-    const { rows } = await db.query(query);
-    return rows;
-};
+async function getAllWalks() {
+    try {
+        const result = await pool.query(queries.getAllWalks);
+        return result.rows;
+    } catch (err) {
+        console.error("Error executing getAllWalks:", err);
+        throw err;
+    }
+}
 
-// Crear un paseo
-const createWalk = async (paseo) => {
-    const { id_usuario, ubicación_inicio, capacidad, precio, estado_pendiente } = paseo;
-    const query = `
-        INSERT INTO paseos (id_usuario, ubicación_inicio, capacidad, precio, estado_pendiente)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING *
-    `;
-    const { rows } = await db.query(query, [id_usuario, ubicación_inicio, capacidad, precio, estado_pendiente]);
-    return rows[0];
-};
+async function createWalk({ id_perro, fecha_hora, ubicacion_inicio, precio, capacidad, estado_pendiente }) {
+    try {
+        const values = [id_perro, fecha_hora, ubicacion_inicio, precio, capacidad, estado_pendiente];
+        const result = await pool.query(queries.createWalk, values);
+        return result.rows[0];
+    } catch (err) {
+        console.error("Error executing createWalk:", err);
+        throw err;
+    }
+}
 
-// Eliminar un paseo
-const deleteWalk = async (id_paseo) => {
-    const query = 'DELETE FROM paseo WHERE id_paseo = $1';
-    await db.query(query, [id_paseo]);
-};
+async function deleteWalk(id_paseo) {
+    try {
+        const result = await pool.query(queries.deleteWalk, [id_paseo]);
+        return result.rows[0];
+    } catch (err) {
+        console.error("Error executing deleteWalk:", err);
+        throw err;
+    }
+}
 
 module.exports = {
     getAllWalks,

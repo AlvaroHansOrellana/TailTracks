@@ -1,101 +1,94 @@
 const pagoModel = require('../models/pago');
+const pool = require('../config/db')
 
 
-
-// Obtener todos los pagos del usuario autenticado con filtros y paginación
+// Obtener todos los pagos
 const getAllPayments = async (req, res) => {
     try {
-        const { fecha_inicio, fecha_fin, page = 1, limit = 10 } = req.query;
-        const offset = (page - 1) * limit;
-
-        const filters = {
-            userId: req.user.id_usuario,
-            fecha_inicio,
-            fecha_fin,
-            offset: parseInt(offset, 10),
-            limit: parseInt(limit, 10),
-        };
-
-        const payments = await pagoModel.getPaymentsByFilters(filters);
-
-        res.status(200).json({
-            success: true,
-            data: payments,
-            pagination: {
-                currentPage: parseInt(page, 10),
-                limit: parseInt(limit, 10),
-            },
-        });
+        const payments = await pagoModel.getAllPayments();
+        res.status(200).json({ success: true, payments });
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener los pagos', error });
+        console.error("Error fetching payments:", error);
+        res.status(500).json({ success: false, message: "Error al obtener los pagos" });
     }
 };
 
 // Crear un nuevo pago
 const createPayment = async (req, res) => {
-    try {
-        const { id_paseo, cantidad, fecha_pago, metodo_pago } = req.body;
-        const newPayment = {
-            id_paseo,
-            id_usuario: req.user.id_usuario,
-            cantidad,
-            fecha_pago,
-            metodo_pago,
-        };
+    const { id_paseo, id_usuario, cantidad, fecha_pago, metodo_pago } = req.body;
 
-        const payment = await pagoModel.createPayment(newPayment);
-
-        res.status(201).json({
-            success: true,
-            message: 'Pago creado exitosamente',
-            data: payment,
+    if (!id_paseo || !id_usuario || !cantidad || !fecha_pago) {
+        return res.status(400).json({
+            success: false,
+            message: "Los campos id_paseo, id_usuario, cantidad y fecha_pago son obligatorios",
         });
-    } catch (error) {
-        res.status(500).json({ message: 'Error al crear el pago', error });
     }
-};
 
-// Actualizar un pago existente
-const updatePayment = async (req, res) => {
     try {
-        const { id_pago } = req.params;
-        const { cantidad, fecha_pago, metodo_pago } = req.body;
+        // Validar si el id_paseo y el id_usuario existen antes de crear el pago
+        const paseoExists = await pool.query('SELECT 1 FROM paseo WHERE id_paseo = $1', [id_paseo]);
+        if (paseoExists.rowCount === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "El id_paseo proporcionado no existe",
+            });
+        }
 
-        const updatedPayment = await pagoModel.updatePayment(id_pago, {
+        const userExists = await pool.query('SELECT 1 FROM usuario WHERE id_usuario = $1', [id_usuario]);
+        if (userExists.rowCount === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "El id_usuario proporcionado no existe",
+            });
+        }
+
+        const newPayment = await pagoModel.createPayment({
+            id_paseo,
+            id_usuario,
             cantidad,
             fecha_pago,
-            metodo_pago,
+            metodo_pago: metodo_pago || "Desconocido",
         });
-
-        res.status(200).json({
-            success: true,
-            message: 'Pago actualizado exitosamente',
-            data: updatedPayment,
-        });
+        res.status(201).json({ success: true, payment: newPayment });
     } catch (error) {
-        res.status(500).json({ message: 'Error al actualizar el pago', error });
+        console.error("Error creating payment:", error);
+        res.status(500).json({ success: false, message: "Error al crear el pago" });
     }
 };
 
 // Eliminar un pago
 const deletePayment = async (req, res) => {
+    const { id_pago } = req.params;
+
+    if (!id_pago) {
+        return res.status(400).json({
+            success: false,
+            message: "El ID del pago es obligatorio para eliminarlo",
+        });
+    }
+
     try {
-        const { id_pago } = req.params;
+        const deletedPayment = await pagoModel.deletePayment(id_pago);
 
-        await pagoModel.deletePayment(id_pago);
+        if (!deletedPayment) {
+            return res.status(404).json({
+                success: false,
+                message: "No se encontró un pago con el ID proporcionado",
+            });
+        }
 
-        res.status(204).json({
+        res.status(200).json({
             success: true,
-            message: 'Pago eliminado exitosamente',
+            message: "Pago eliminado correctamente",
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error al eliminar el pago', error });
+        console.error("Error deleting payment:", error);
+        res.status(500).json({ success: false, message: "Error al eliminar el pago" });
     }
 };
 
 module.exports = {
     getAllPayments,
     createPayment,
-    updatePayment,
     deletePayment,
 };

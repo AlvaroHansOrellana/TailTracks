@@ -1,33 +1,67 @@
 const paseoModel = require('../models/paseo');
-const CustomError = require('../utils/customError');
+
 
 // Obtener todos los paseos
-const getAllWalks = async (req, res, next) => {
+const getAllWalks = async (req, res) => {
     try {
         const walks = await paseoModel.getAllWalks();
-        res.json(walks);
-    } catch (err) {
-        next(new CustomError('Error al obtener los paseos', 500));
+        res.status(200).json({ success: true, walks });
+    } catch (error) {
+        console.error("Error fetching walks:", error);
+        res.status(500).json({ success: false, message: "Error al obtener los paseos" });
     }
 };
 
-// Crear un paseo
-const createWalk = async (req, res, next) => {
+// Crear un nuevo paseo
+const createWalk = async (req, res) => {
+    const { id_perro, fecha_hora, ubicacion_inicio, precio, capacidad, estado_pendiente } = req.body;
+
+    if (!id_perro || !fecha_hora || !precio || !capacidad) {
+        return res.status(400).json({
+            success: false,
+            message: "Los campos id_perro, fecha_hora, precio y capacidad son obligatorios",
+        });
+    }
+
     try {
-        const walk = await paseoModel.createWalk(req.body);
-        res.status(201).json(walk);
-    } catch (err) {
-        next(err);
+        const newWalk = await paseoModel.createWalk({
+            id_perro,
+            fecha_hora,
+            ubicacion_inicio,
+            precio,
+            capacidad,
+            estado_pendiente: estado_pendiente || true,
+        });
+        res.status(201).json({ success: true, walk: newWalk });
+    } catch (error) {
+        console.error("Error creating walk:", error);
+        res.status(500).json({ success: false, message: "Error al crear el paseo" });
     }
 };
 
 // Eliminar un paseo
-const deleteWalk = async (req, res, next) => {
+const deleteWalk = async (req, res) => {
+    const { id_paseo } = req.params;
+
+    if (!id_paseo) {
+        return res.status(400).json({
+            success: false,
+            message: "El ID del paseo es obligatorio para eliminarlo",
+        });
+    }
+
     try {
-        await paseoModel.deleteWalk(req.params.id_paseo);
-        res.status(204).send();
-    } catch (err) {
-        next(err);
+        const deletedWalk = await paseoModel.deleteWalk(id_paseo);
+        if (!deletedWalk) {
+            return res.status(404).json({
+                success: false,
+                message: "No se encontró un paseo con el ID proporcionado",
+            });
+        }
+        res.status(200).json({ success: true, message: "Paseo eliminado correctamente" });
+    } catch (error) {
+        console.error("Error deleting walk:", error);
+        res.status(500).json({ success: false, message: "Error al eliminar el paseo" });
     }
 };
 
