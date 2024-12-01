@@ -5,6 +5,7 @@ import Main from "./components/Main";
 import Footer from "./components/Footer";
 import { DogsProvider } from './contexts/DogsContext';
 import { PaseosProvider } from './contexts/PaseosContext';
+import "leaflet/dist/leaflet.css";
 import "./App.scss";
 
 const App = () => {

@@ -1,6 +1,10 @@
 import React, { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import "leaflet-control-geocoder";
 import { PaseosContext } from '../../../../contexts/PaseosContext';
 import { DogsContext } from '../../../../contexts/DogsContext';
 import { useForm } from "react-hook-form";
@@ -13,7 +17,8 @@ const PaseoDetalle = () => {
   const [selectedDog, setSelectedDog] = useState("");
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const paseo = paseos.find(p => p.id_paseo === parseInt(id_paseo));
+  // Encuentra el paseo actual por ID
+  const paseo = paseos.find((p) => p.id_paseo === parseInt(id_paseo));
 
   const onSubmit = async (data) => {
     if (!data.id_perro) {
@@ -22,10 +27,11 @@ const PaseoDetalle = () => {
     }
 
     try {
-      const response = await axios.post(`http://localhost:3000/paseos/${paseo.id_paseo}/add-dog`, {
-        id_perro: parseInt(data.id_perro)
-      });
-    
+      const response = await axios.post(
+        `http://localhost:3000/paseos/${paseo.id_paseo}/add-dog`,
+        { id_perro: parseInt(data.id_perro) }
+      );
+
       if (response.data.success) {
         alert("Perro añadido al paseo exitosamente");
         navigate("/");
@@ -38,10 +44,12 @@ const PaseoDetalle = () => {
     }
   };
 
+  // Validar si los datos aún están cargando
   if (loadingPaseos || loadingDogs) {
     return <div>Cargando...</div>;
   }
 
+  // Validar si no se encuentra el paseo
   if (!paseo) {
     return <div>No se encontró el paseo</div>;
   }
@@ -57,6 +65,34 @@ const PaseoDetalle = () => {
         <p><strong>Estado:</strong> {paseo.estado_pendiente ? "Pendiente" : "Confirmado"}</p>
       </div>
 
+      {/* Mapa interactivo */}
+      <div className="map-container mb-4" style={{ height: "400px", width: "100%" }}>
+        <MapContainer center={[0, 0]} zoom={13} style={{ height: "100%", width: "100%" }}>
+          {/* Capa de mapa base */}
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution="&copy; OpenStreetMap contributors"
+          />
+          {/* Marcador dinámico basado en la geocodificación */}
+          <Marker
+            position={[0, 0]}
+            ref={(ref) => {
+              if (ref) {
+                const geocoder = L.Control.Geocoder.nominatim();
+                geocoder.geocode(paseo.ubicacion_inicio, (results) => {
+                  if (results.length > 0) {
+                    const { center } = results[0];
+                    ref.setLatLng(center);
+                    ref.bindPopup(`<b>${paseo.ubicacion_inicio}</b>`).openPopup();
+                  }
+                });
+              }
+            }}
+          />
+        </MapContainer>
+      </div>
+
+      {/* Formulario para añadir un perro */}
       <form onSubmit={handleSubmit(onSubmit)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dog-select">
