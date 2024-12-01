@@ -3,23 +3,36 @@
 
 .card-dog {
   border: 1px solid $secondary-color;
+  border-radius: 10px; /* Añadimos bordes redondeados */
   overflow: hidden;
   text-align: center;
-  
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Mejoramos el diseño */
 
   &:hover {
     transform: scale(1.05);
+    transition: transform 0.3s ease;
   }
 
   .dog-link {
     text-decoration: none;
     color: inherit;
-  }
+    display: block;
 
-  .dog-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+    .image-wrapper {
+      width: 100%;
+      aspect-ratio: 16/9; /* Mantiene la proporción de la imagen */
+      overflow: hidden;
+      background: $light-gray; /* Color de fondo en caso de carga lenta */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .dog-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* Evita cortes en la imagen */
+      }
+    }
   }
 
   h2 {

@@ -2,30 +2,27 @@
 @import "../../../../../../../styles/variables";
 
 .dog-details {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-    background-color: $background-color;
-      
-    img {
-      width: 100%;
-      height: 300px;
-      object-fit: cover;
-      
-    }
-  
-    h1 {
-      margin: 20px 0;
-      
-    }
-  
-    p {
-      margin: 10px 0;
-     
-  
-      strong {
-        font-weight: bold;
-      }
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  background-color: $background-color;
+
+  img {
+    width: 100%;
+    height: auto; /* Ajuste automático para mantener proporción */
+    object-fit: contain; /* Mostrar imagen sin cortes */
+  }
+
+  h1 {
+    margin: 20px 0;
+  }
+
+  p {
+    margin: 10px 0;
+
+    strong {
+      font-weight: bold;
     }
   }
+}
