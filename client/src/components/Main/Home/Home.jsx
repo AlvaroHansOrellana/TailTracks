@@ -30,7 +30,7 @@ const Home = () => {
     });
 
     setFilteredPaseos(filtered);
-    setIsFiltered(true); // Update 2
+    setIsFiltered(true);
     setCurrentPage(1);
   };
 
@@ -87,7 +87,7 @@ const Home = () => {
             <option value="pendiente">Pendiente</option>
             <option value="confirmado">Confirmado</option>
           </select>
-          <button type="submit">Buscar Paseos</button> {/* Update 4 */}
+          <button type="submit">Buscar Paseos</button> 
           <button type="button" onClick={resetFilters}>Resetear Filtros</button>
         </form>
 
