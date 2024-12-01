@@ -90,10 +90,30 @@ const getWalkById = async (req, res) => {
     }
 };
 
+const addDogToWalk = async (req, res) => {
+    const { id_paseo } = req.params;
+    const { id_perro } = req.body;
+
+    if (!id_paseo || !id_perro) {
+        return res.status(400).json({
+            success: false,
+            message: "Los campos id_paseo y id_perro son obligatorios",
+        });
+    }
+
+    try {
+        const updatedWalk = await paseoModel.addDogToWalk(id_paseo, id_perro);
+        res.status(200).json({ success: true, walk: updatedWalk });
+    } catch (error) {
+        console.error("Error adding dog to walk:", error);
+        res.status(500).json({ success: false, message: "Error al añadir el perro al paseo" });
+    }
+};
 
 module.exports = {
     getAllWalks,
     createWalk,
     deleteWalk,
     getWalkById,
+    addDogToWalk,
 };

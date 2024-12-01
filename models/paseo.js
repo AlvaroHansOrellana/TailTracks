@@ -45,10 +45,20 @@ async function getWalkById(id_paseo) {
     }
 };
 
+async function addDogToWalk(id_paseo, id_perro) {
+    try {
+        const result = await pool.query(queries.addDogToWalk, [id_paseo, id_perro]);
+        return result.rows[0];
+    } catch (err) {
+        console.error("Error addDogToWalk:", err);
+        throw err;
+    }
+};
 
 module.exports = {
     getAllWalks,
     createWalk,
     deleteWalk,
     getWalkById,
+    addDogToWalk,
 };

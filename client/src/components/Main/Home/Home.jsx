@@ -1,211 +1,125 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Card from "./Card"; // Componente para mostrar paseos
-import CardDog from "./Perros/CardDog"; // Componente para mostrar perros
+import React, { useContext, useState } from "react";
+import { DogsContext } from '../../../contexts/DogsContext';
+import { PaseosContext } from '../../../contexts/PaseosContext';
+import Card from "./Card";
+import CardDog from "./Perros/CardDog";
+import { useForm } from "react-hook-form";
 import "./Home.scss";
 
 const Home = () => {
-  const [paseos, setPaseos] = useState([]);
+  const { dogs, loading: loadingDogs } = useContext(DogsContext);
+  const { paseos, loading: loadingPaseos } = useContext(PaseosContext);
   const [filteredPaseos, setFilteredPaseos] = useState([]);
-  const [perros, setPerros] = useState([]);
-  const [filters, setFilters] = useState({
-    fecha: "",
-    ubicacion: "",
-    precioMin: "",
-    precioMax: "",
-    capacidad: "",
-    estado: "",
-  });
-  const [sortBy, setSortBy] = useState("fecha");
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [isFiltered, setIsFiltered] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isFiltered, setIsFiltered] = useState(false); // Update 1
+  const itemsPerPage = 10;
 
-  // Fetch paseos
-  useEffect(() => {
-    const fetchPaseos = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/paseos");
-        if (response.data.success && Array.isArray(response.data.walks)) {
-          setPaseos(response.data.walks);
-        } else {
-          console.error("Invalid data format:", response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching paseos:", error);
-      }
-    };
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
-    fetchPaseos();
-  }, []);
-
-  // Fetch perros
-  useEffect(() => {
-    const fetchPerros = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/perros");
-        if (Array.isArray(response.data)) {
-          setPerros(response.data);
-        } else {
-          console.error("Invalid data format:", response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching perros:", error);
-      }
-    };
-
-    fetchPerros();
-  }, []);
-
-  const applyFiltersAndSort = () => {
-    let filtered = paseos.filter((paseo) => {
+  const onSubmit = (data) => {
+    const filtered = paseos.filter((paseo) => {
       const paseoDate = new Date(paseo.fecha_hora).toISOString().split("T")[0];
       return (
-        (!filters.fecha || paseoDate === filters.fecha) &&
-        (!filters.ubicacion ||
-          paseo.ubicacion_inicio
-            .toLowerCase()
-            .includes(filters.ubicacion.toLowerCase())) &&
-        (!filters.precioMin ||
-          parseFloat(paseo.precio) >= parseFloat(filters.precioMin)) &&
-        (!filters.precioMax ||
-          parseFloat(paseo.precio) <= parseFloat(filters.precioMax)) &&
-        (!filters.capacidad ||
-          paseo.capacidad === parseInt(filters.capacidad)) &&
-        (filters.estado === "" ||
-          (filters.estado === "pendiente" && paseo.estado_pendiente) ||
-          (filters.estado === "confirmado" && !paseo.estado_pendiente))
+        (!data.fecha || paseoDate === data.fecha) &&
+        (!data.ubicacion || paseo.ubicacion_inicio.toLowerCase().includes(data.ubicacion.toLowerCase())) &&
+        (!data.precioMin || parseFloat(paseo.precio) >= parseFloat(data.precioMin)) &&
+        (!data.precioMax || parseFloat(paseo.precio) <= parseFloat(data.precioMax)) &&
+        (!data.capacidad || paseo.capacidad === parseInt(data.capacidad)) &&
+        (data.estado === "" || (data.estado === "pendiente" && paseo.estado_pendiente) || (data.estado === "confirmado" && !paseo.estado_pendiente))
       );
     });
 
-    filtered.sort((a, b) => {
-      let comparison = 0;
-      switch (sortBy) {
-        case "fecha":
-          comparison = new Date(a.fecha_hora) - new Date(b.fecha_hora);
-          break;
-        case "precio":
-          comparison = parseFloat(a.precio) - parseFloat(b.precio);
-          break;
-        case "capacidad":
-          comparison = a.capacidad - b.capacidad;
-          break;
-        default:
-          comparison = 0;
-      }
-      return sortOrder === "asc" ? comparison : -comparison;
-    });
-
     setFilteredPaseos(filtered);
+    setIsFiltered(true); // Update 2
+    setCurrentPage(1);
   };
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFilterButtonClick = () => {
-    const areAllFiltersEmpty = Object.values(filters).every(
-      (filter) => filter === ""
-    );
-
-    if (!areAllFiltersEmpty) {
-      setIsFiltered(true);
-      applyFiltersAndSort();
-    } else {
-      setIsFiltered(false);
-      setFilteredPaseos([]);
-    }
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      fecha: "",
-      ubicacion: "",
-      precioMin: "",
-      precioMax: "",
-      capacidad: "",
-      estado: "",
-    });
+  const resetFilters = () => { // Update 3
     setIsFiltered(false);
     setFilteredPaseos([]);
+    setCurrentPage(1);
   };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = isFiltered
+    ? filteredPaseos.slice(indexOfFirstItem, indexOfLastItem)
+    : paseos.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  if (loadingDogs || loadingPaseos) return <p>Loading...</p>;
 
   return (
     <div className="home">
-      {/* Sección de Paseos */}
       <section className="buscar-paseos-container">
         <h1>Buscar Paseos</h1>
-        <div className="filtros">
+        <form onSubmit={handleSubmit(onSubmit)} className="filtros">
           <input
             type="date"
-            name="fecha"
-            value={filters.fecha}
-            onChange={handleFilterChange}
+            {...register("fecha")}
           />
           <input
             type="text"
-            name="ubicacion"
-            value={filters.ubicacion}
-            onChange={handleFilterChange}
             placeholder="Ubicación"
+            {...register("ubicacion")}
           />
           <input
             type="number"
-            name="precioMin"
-            value={filters.precioMin}
-            onChange={handleFilterChange}
             placeholder="Precio mínimo"
+            {...register("precioMin", { min: 0 })}
           />
+          {errors.precioMin && <span>El precio mínimo debe ser positivo</span>}
           <input
             type="number"
-            name="precioMax"
-            value={filters.precioMax}
-            onChange={handleFilterChange}
             placeholder="Precio máximo"
+            {...register("precioMax", { min: 0 })}
           />
+          {errors.precioMax && <span>El precio máximo debe ser positivo</span>}
           <input
             type="number"
-            name="capacidad"
-            value={filters.capacidad}
-            onChange={handleFilterChange}
             placeholder="Capacidad"
+            {...register("capacidad", { min: 1 })}
           />
-          <select
-            name="estado"
-            value={filters.estado}
-            onChange={handleFilterChange}
-          >
+          {errors.capacidad && <span>La capacidad debe ser al menos 1</span>}
+          <select {...register("estado")}>
             <option value="">Todos los estados</option>
             <option value="pendiente">Pendiente</option>
             <option value="confirmado">Confirmado</option>
           </select>
-        </div>
-        <div className="filtros-buttons">
-          <button onClick={handleFilterButtonClick}>Aplicar Filtros</button>
-          <button onClick={resetFilters}>Resetear Filtros</button>
-        </div>
+          <button type="submit">Buscar Paseos</button> {/* Update 4 */}
+          <button type="button" onClick={resetFilters}>Resetear Filtros</button>
+        </form>
 
-        {isFiltered && filteredPaseos.length > 0 && (
-          <div className="paseos-list">
-            {filteredPaseos.map((paseo) => (
-              <Card key={paseo.id_paseo} paseo={paseo} />
-            ))}
-          </div>
+        {isFiltered && (
+          <>
+            <h2>Resultados de la Búsqueda</h2>
+            <div className="paseos-list">
+              {currentItems.map((paseo) => (
+                <Card key={paseo.id_paseo} paseo={paseo} />
+              ))}
+            </div>
+
+            {filteredPaseos.length > itemsPerPage && (
+              <div className="pagination">
+                {Array.from({ length: Math.ceil(filteredPaseos.length / itemsPerPage) }, (_, i) => (
+                  <button key={i} onClick={() => paginate(i + 1)}>{i + 1}</button>
+                ))}
+              </div>
+            )}
+
+            {filteredPaseos.length === 0 && (
+              <p>No se encontraron paseos que coincidan con los filtros.</p>
+            )}
+          </>
         )}
-
-        {isFiltered && filteredPaseos.length === 0 && (
-          <p>No se encontraron paseos que coincidan con los filtros.</p>
-        )}
-
-        {!isFiltered && <p>Use los filtros para buscar paseos disponibles.</p>}
       </section>
 
-      {/* Sección de Perros */}
       {!isFiltered && (
         <section className="lista-perros-container">
           <h1>Lista de Perros</h1>
           <div className="perros-list">
-            {perros.map((perro) => (
+            {dogs.map((perro) => (
               <CardDog key={perro.id_perro} perro={perro} />
             ))}
           </div>

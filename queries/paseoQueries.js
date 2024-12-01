@@ -21,6 +21,12 @@ const queries = {
         SELECT * FROM paseo
         WHERE id_paseo = $1;
     `,
+    addDogToWalk: `
+    UPDATE paseo
+    SET id_perro = $2
+    WHERE id_paseo = $1
+    RETURNING *;
+    `,
 };
 
 module.exports = queries;

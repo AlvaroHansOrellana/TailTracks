@@ -1,18 +1,24 @@
 import React from "react";
-import Main from "./components/Main";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import "./App.scss";
 import { BrowserRouter } from 'react-router-dom';
+import Header from "./components/Header";
+import Main from "./components/Main";
+import Footer from "./components/Footer";
+import { DogsProvider } from './contexts/DogsContext';
+import { PaseosProvider } from './contexts/PaseosContext';
+import "./App.scss";
 
 const App = () => {
   return (
     <BrowserRouter>
-      <div className="app-container">
-        <Header />
-        <Main />
-        <Footer />
-      </div>
+      <DogsProvider>
+        <PaseosProvider>
+          <div className="app-container">
+            <Header />
+            <Main />
+            <Footer />
+          </div>
+        </PaseosProvider>
+      </DogsProvider>
     </BrowserRouter>
   );
 };

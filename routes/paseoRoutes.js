@@ -4,13 +4,11 @@ const router = express.Router();
 
 
 // Obtener todos los paseos
-router.get('/todos', paseoController.getAllWalks); // !
+router.get('/', paseoController.getAllWalks); // !
 router.post('/', paseoController.createWalk); // !
 router.delete('/:id_paseo', paseoController.deleteWalk);  // !! Delete por el Id del paseo
 
-router.get('/:id_paseo', paseoController.getWalkById); // ! Ruta para acceder a ver los detalles en el front
-
-
+router.post('/:id_paseo/add-dog', paseoController.addDogToWalk);
 
 module.exports = router;
 
