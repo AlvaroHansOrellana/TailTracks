@@ -58,7 +58,6 @@ CREATE TABLE pago (
 );
 
 
--- Insert fake data into usuario table
 INSERT INTO usuario (nombre, email, password, ubicacion, telefono) VALUES
 ('Ana García', 'ana@email.com', 'password123', 'Madrid', '600123456'),
 ('Carlos Rodríguez', 'carlos@email.com', 'securepass', 'Barcelona', '611234567'),
@@ -71,7 +70,7 @@ INSERT INTO usuario (nombre, email, password, ubicacion, telefono) VALUES
 ('Carmen Moreno', 'carmen@email.com', 'securepass123', 'Palma', '688901234'),
 ('Javier Jiménez', 'javier@email.com', 'strongpass456', 'Las Palmas', '699012345');
 
--- Insert fake data into perro table
+
 INSERT INTO perro (id_usuario, nombre, edad, raza, peso, foto, comportamiento) VALUES
 (1, 'Max', 3, 'Labrador', 25.5, 'max.jpg', 'Amigable y juguetón'),
 (2, 'Luna', 2, 'Bulldog', 18.2, 'luna.jpg', 'Tranquila y cariñosa'),
@@ -84,7 +83,7 @@ INSERT INTO perro (id_usuario, nombre, edad, raza, peso, foto, comportamiento) V
 (9, 'Cooper', 5, 'Boxer', 29.4, 'cooper.jpg', 'Protector y leal'),
 (10, 'Lucy', 4, 'Chihuahua', 3.2, 'lucy.jpg', 'Pequeña pero valiente');
 
--- Insert fake data into paseo table
+
 INSERT INTO paseo (id_perro, fecha_hora, ubicacion_inicio, precio, capacidad, estado_pendiente) VALUES
 (1, '2024-03-15 10:00:00', 'Parque del Retiro', 15.00, 3, true),
 (2, '2024-03-15 11:30:00', 'Playa de la Barceloneta', 18.00, 2, false),
@@ -97,7 +96,7 @@ INSERT INTO paseo (id_perro, fecha_hora, ubicacion_inicio, precio, capacidad, es
 (9, '2024-03-19 11:00:00', 'Parque de la Mar', 18.50, 3, true),
 (10, '2024-03-19 18:00:00', 'Parque de Santa Catalina', 16.00, 2, true);
 
--- Insert fake data into pago table
+
 INSERT INTO pago (id_paseo, id_usuario, cantidad, fecha_pago, metodo_pago) VALUES
 (1, 1, 15.00, '2024-03-15 09:55:00', 'Tarjeta de crédito'),
 (2, 2, 18.00, '2024-03-15 11:25:00', 'PayPal'),

@@ -1,8 +1,9 @@
-import React from 'react';
+import React from "react";
+import "./Footer.scss";
 
 const Footer = () => {
   return (
-    <footer style={{ backgroundColor: '#f1f1f1', textAlign: 'center', padding: '10px' }}>
+    <footer>
       <p>© 2024 TailTracks. Todos los derechos reservados.</p>
     </footer>
   );

@@ -1,0 +1,30 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/_mixins.scss";
+
+
+.navbar {
+  background-color: $secondary-color;
+  padding: 10px;
+
+  .nav {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+
+    .nav-link {
+      a {
+        text-decoration: none;
+        color: white;
+        font-size: 1rem;
+        font-weight: bold;
+
+        &:hover {
+          color: lighten($secondary-color, 20%);
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

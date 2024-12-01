@@ -1,0 +1,9 @@
+@import "../styles/_variables.scss";
+@import "../styles/_mixins.scss";
+
+.main-content {
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 1200px;
+  background-color: $background-color;
+}

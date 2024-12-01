@@ -1,0 +1,34 @@
+@import "../../../../../styles/variables";
+@import "../../../../../styles/_mixins.scss";
+
+.card {
+  border: 1px solid darken($background-color, 10%);
+  border-radius: $border-radius;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+
+  h2 {
+    font-size: 1.5rem;
+    color: $primary-color;
+  }
+
+  p {
+    margin: 5px 0;
+    color: $text-color;
+  }
+
+  a {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    background-color: $primary-color;
+    color: white;
+    padding: 10px 20px;
+    border-radius: $border-radius;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}

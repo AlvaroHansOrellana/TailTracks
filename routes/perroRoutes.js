@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 // Obtener todos los perros
-router.get('/', perroController.getAllDogs);  // !
+router.get('/', perroController.getAllDogs);// !
 router.get('/:nombre', perroController.getDogByName); // !!
 router.post('/', perroController.createDog); // ! 
 router.delete('/:id_perro', perroController.deleteDog); // ! Delete por Id de perro

@@ -1,12 +1,12 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
       '/usuarios': {
-        target: 'http://localhost:5000', // Dirección del backend
+        target: 'http://localhost:5000',
         changeOrigin: true,
       },
       '/paseos': {
@@ -21,6 +21,11 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
+    },
+  },
+  resolve: {
+    alias: {
+      '@': '/src',
     },
   },
 });

@@ -17,6 +17,10 @@ const queries = {
         WHERE id_paseo = $1
         RETURNING *;
     `,
+    getWalkById: `
+        SELECT * FROM paseo
+        WHERE id_paseo = $1;
+    `,
 };
 
 module.exports = queries;

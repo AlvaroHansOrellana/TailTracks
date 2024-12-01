@@ -1,0 +1,25 @@
+// @import "../../../../styles/_variables.scss";
+@import "../../../../../styles/variables";
+@import "../../../../../styles/_mixins.scss";
+
+.perros-list {
+    display: grid; /* Usamos CSS Grid para las tarjetas */
+    gap: 20px; /* Espaciado entre tarjetas */
+  
+    // Mobile-first: 1 columna
+    grid-template-columns: 1fr;
+  
+    // Tablet: 2 columnas
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    // Desktop: 3 columnas
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  
+    // justify-items: center; /* Centra las tarjetas dentro del grid */
+    width: 100%; /* Asegura que ocupe todo el ancho del contenedor */
+  }
+  

@@ -1,11 +1,17 @@
 import React from "react";
-import Navbar from './Navbar/Navbar'
+import { Link } from "react-router-dom";
+import "./Header.scss";
 
 const Header = () => {
   return (
-    <header style={{ backgroundColor: '#f8f9fa', padding: '10px' }}>
+    <header>
       <h1>TailTracks</h1>
-      <Navbar />
+      <nav className="nav"> 
+        <Link to="/">Home</Link>
+        <Link to="/todos">Paseos</Link>
+        {/* <Link to="/signup">SignUp</Link>
+        <Link to="/signin">SignIn</Link> */}
+      </nav>
     </header>
   );
 };
