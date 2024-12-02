@@ -1,0 +1,13 @@
+{
+    "source": {
+      "include": ["routes", "controllers", "models"],
+      "includePattern": ".js$", 
+      "excludePattern": "(node_modules|test)" 
+    },
+    "opts": {
+      "destination": "./docs", 
+      "recurse": true, 
+      "readme": "./README.md" 
+    }
+  }
+  
