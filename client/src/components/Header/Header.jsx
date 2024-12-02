@@ -7,7 +7,9 @@ const Header = () => {
   return (
     <header>
       <div className="logo-container">
-        <img src={logo} alt="TailTracks Logo" className="logo" />
+        <a href="https://www.youtube.com/shorts/i8ZW94SWchE" target="_blank" rel="noopener noreferrer">
+          <img src={logo} alt="TailTracks Logo" className="logo" />
+        </a>
         {/* <h1 className="cabesa">TailTracks</h1> */}
       </div>
       <nav className="nav">
