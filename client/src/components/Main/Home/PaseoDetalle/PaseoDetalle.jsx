@@ -76,7 +76,7 @@ const PaseoDetalle = () => {
 
   return (
     <div className="paseos">
-      <h1>Detalles del Paseo</h1>
+      <h1 className="detallesMuchos">Detalles del Paseo</h1>
       <div className="detalles2">
         <p><strong>Fecha y Hora:</strong> {new Date(paseo.fecha_hora).toLocaleString()}</p>
         <p><strong>Ubicación:</strong> {paseo.ubicacion_inicio}</p>
@@ -113,15 +113,14 @@ const PaseoDetalle = () => {
       </div>
 
       {/* Formulario para añadir un perro */}
-      <form onSubmit={handleSubmit(onSubmit)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dog-select">
+      <form onSubmit={handleSubmit(onSubmit)} className="formas">
+        <div className="formas2">
+          <label className="selecciona">
             Selecciona un perro:
           </label>
           <select
             id="dog-select"
             {...register("id_perro", { required: "Debes seleccionar un perro" })}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           >
             <option value="">Selecciona un perro</option>
             {dogs.map((perro) => (
@@ -134,7 +133,7 @@ const PaseoDetalle = () => {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="botonsito"
         >
           Añadir Perro
         </button>

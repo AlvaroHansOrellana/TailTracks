@@ -16,6 +16,7 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.7",
+    "normalize-scss": "^8.0.0",
     "path": "^0.12.7",
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
