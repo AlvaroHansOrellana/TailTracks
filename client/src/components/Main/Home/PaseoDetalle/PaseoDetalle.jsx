@@ -136,7 +136,7 @@ const PaseoDetalle = () => {
           className="botonsito"
         >
           Añadir Perro
-        </button>
+        </button> 
       </form>
     </div>
   );

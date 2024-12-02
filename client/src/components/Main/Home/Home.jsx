@@ -108,8 +108,10 @@ const Home = () => {
             <option value="pendiente">Pendiente</option>
             <option value="confirmado">Confirmado</option>
           </select>
-          <button type="submit">Buscar Paseos</button> 
-          <button type="button" onClick={resetFilters}>Resetear Filtros</button>
+          <div className="cajitas">
+          <button type="submit" className="buscarlos">Buscar Paseos</button> 
+          <button type="button" className="reseteralos" onClick={resetFilters}>Resetear Filtros</button>
+          </div>
         </form>
 
         {isFiltered && (

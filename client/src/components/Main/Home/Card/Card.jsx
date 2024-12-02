@@ -23,7 +23,7 @@ const Card = ({ paseo }) => {
         <strong>Estado:</strong>{" "}
         {paseo.estado_pendiente ? "Pendiente" : "Confirmado"}
       </p>
-      <Link to={`/paseo/${paseo.id_paseo}`}>Ver detalles</Link>
+      <Link to={`/paseo/${paseo.id_paseo}`} className="detalles">Ver detalles</Link>
     </div>
   );
 };

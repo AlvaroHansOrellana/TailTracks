@@ -2,25 +2,32 @@
 @import "../../../styles/_mixins.scss";
 
 header {
-  display: flex;
-  justify-content: space-between; /* Space between logo+title and nav */
-  align-items: center; /* Align items vertically */
-  padding: 20px 40px;
+  // display: flex;
+  justify-content: center; /* Centers all items horizontally */
+  align-items: center; /* Aligns all items vertically */
+  padding: 12px 20px;
   background: linear-gradient(90deg, #3498db, #2ecc71); /* Cool gradient */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   border-radius: 0 0 10px 10px; /* Rounded corners */
   position: sticky; /* Sticks to top */
   top: 0;
   z-index: 10;
+}
 
   .logo-container {
-    display: flex;
-    align-items: center; /* Center logo and text vertically */
-    gap: 15px; /* Space between logo and text */
+    display: flex; /* To align items within the container */
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    height: 70px; /* Adjust as needed for the header height */
 
     .logo {
-      width: 90px; 
-      height: auto;
+      max-width: 155px; /* Increase size */
+      height: auto; /* Maintain aspect ratio */
+      transition: transform 0.3s ease; /* Optional hover effect */
+    }
+
+    .logo:hover {
+      transform: scale(1.1); /* Slight hover effect to make it interactive */
     }
 
     .cabesa {
@@ -66,4 +73,4 @@ header {
       }
     }
   }
-}
+
