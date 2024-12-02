@@ -88,7 +88,7 @@ Aunque este es el primer lanzamiento, hay muchas ideas en mente:
 ### 🚀 **Instalación local**  
 1. Clona el repositorio:  
    ```bash
-   git clone https://github.com/tu-repositorio/tailtracks.git
+   git clone https://github.com/AlvaroHansOrellana/TailTracks
    ```
 2. Instala las dependencias:  
    ```bash
@@ -97,18 +97,21 @@ Aunque este es el primer lanzamiento, hay muchas ideas en mente:
    ```
 3. Configura tu archivo `.env` con las credenciales de PostgreSQL y el JWT:  
    ```plaintext
-   DB_HOST=localhost
-   DB_USER=postgres
-   DB_PASSWORD=tu_contraseña
-   JWT_SECRET=clave_secreta
+   DB_HOST=*******************
+   DB_USER=**********
+   DB_DATABASE=******
+   DB_PORT=****
+   DB_PASSWORD=******
+   DB_SSL=true
+   JWT_SECRET=*****************************************
    ```
 4. Arranca el backend:  
    ```bash
-   npm run server
+   nodemon index.js
    ```
 5. Arranca el frontend:  
    ```bash
-   npm run client
+   npm run dev
    ```
 
 ---
