@@ -3,31 +3,67 @@
 
 header {
   display: flex;
-  justify-content: space-evenly;
-  align-items: baseline;
-  padding: 30px 30px;
-  background-color: #3498db;
-}
-  h1 {
-    font-size: 1.5rem;
-    color: rgb(0, 0, 0);
-    margin: 0;
-    text-align: center;
+  justify-content: space-between; /* Space between logo+title and nav */
+  align-items: center; /* Align items vertically */
+  padding: 20px 40px;
+  background: linear-gradient(90deg, #3498db, #2ecc71); /* Cool gradient */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-radius: 0 0 10px 10px; /* Rounded corners */
+  position: sticky; /* Sticks to top */
+  top: 0;
+  z-index: 10;
+
+  .logo-container {
+    display: flex;
+    align-items: center; /* Center logo and text vertically */
+    gap: 15px; /* Space between logo and text */
+
+    .logo {
+      width: 90px; 
+      height: auto;
+    }
+
+    .cabesa {
+      text-align: center;
+      font-size: 2.5rem; /* Adjust font size to balance with the logo */
+      color: #fff;
+      margin: 0;
+      font-family: "Poppins", sans-serif; /* Modern, clean font */
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Subtle shadow for text depth */
+    }
   }
 
   .nav {
     display: flex;
-    gap: 15px;
+    gap: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
     a {
       text-decoration: none;
-      color: white;
+      color: #fff;
       font-weight: bold;
+      font-size: 1.1rem;
+      position: relative; /* For underline animation */
+      transition: color 0.3s ease;
 
       &:hover {
-        color: lighten(white, 20%);
+        color: #2ecc71;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #2ecc71;
+        transition: width 0.3s ease;
+      }
+
+      &:hover::after {
+        width: 100%;
       }
     }
   }
-
-
+}

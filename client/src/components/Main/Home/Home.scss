@@ -1,7 +1,7 @@
 @import "../../../../styles/variables";
 @import "../../../../styles/_mixins.scss";
 
-.home {
+.home2 {
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -9,11 +9,18 @@
   max-width: 1200px;
   margin: 0 auto;
 
+.textoPaseos{
+  text-align: center;
+  font-size: 30px;
+}
+.perrosh1 {
+  text-align: center;
+}
   .buscar-paseos-container,
   .lista-perros-container {
     background: #fff;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.1);
     padding: 20px;
   }
 

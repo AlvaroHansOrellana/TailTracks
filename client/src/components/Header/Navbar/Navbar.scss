@@ -4,7 +4,9 @@
 
 .navbar {
   background-color: $secondary-color;
+  position:fixed;
   padding: 10px;
+  margin-top: 0%;
 
   .nav {
     list-style: none;

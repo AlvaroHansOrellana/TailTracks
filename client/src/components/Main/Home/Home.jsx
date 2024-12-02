@@ -5,6 +5,7 @@ import Card from "./Card";
 import CardDog from "./Perros/CardDog";
 import { useForm } from "react-hook-form";
 import "./Home.scss";
+import { Rings } from 'react-loader-spinner'    
 
 const Home = () => {
   const { dogs, loading: loadingDogs } = useContext(DogsContext);
@@ -48,12 +49,32 @@ const Home = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  if (loadingDogs || loadingPaseos) return <p>Loading...</p>;
+  if (loadingDogs || loadingPaseos) return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "200px", // Adjust as needed
+        width: "200px",  // Adjust as needed
+        margin: "auto", // Centers the container within a parent element
+        border: "1px solid transparent", // Optional, just for visibility during testing
+      }}
+    >
+      <Rings
+        visible={true}
+        height="80"
+        width="80"
+        color="#4fa94d"
+        ariaLabel="rings-loading"
+      />
+    </div>
+  );
 
   return (
-    <div className="home">
+    <div className="home2">
       <section className="buscar-paseos-container">
-        <h1>Buscar Paseos</h1>
+        <h1 className="textoPaseos">Buscar Paseos</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="filtros">
           <input
             type="date"
@@ -117,7 +138,7 @@ const Home = () => {
 
       {!isFiltered && (
         <section className="lista-perros-container">
-          <h1>Lista de Perros</h1>
+          <h1 className="perrosh1">Lista de Perros</h1>
           <div className="perros-list">
             {dogs.map((perro) => (
               <CardDog key={perro.id_perro} perro={perro} />

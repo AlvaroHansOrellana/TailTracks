@@ -8,6 +8,7 @@ import "leaflet-control-geocoder";
 import { PaseosContext } from '../../../../contexts/PaseosContext';
 import { DogsContext } from '../../../../contexts/DogsContext';
 import { useForm } from "react-hook-form";
+import { Rings } from 'react-loader-spinner'
 
 const PaseoDetalle = () => {
   const { id_paseo } = useParams();
@@ -46,8 +47,27 @@ const PaseoDetalle = () => {
 
   // Validar si los datos aún están cargando
   if (loadingPaseos || loadingDogs) {
-    return <div>Cargando...</div>;
-  }
+    return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "200px", // Adjust as needed
+        width: "200px",  // Adjust as needed
+        margin: "auto", // Centers the container within a parent element
+        border: "1px solid transparent", // Optional, just for visibility during testing
+      }}
+    >
+      <Rings
+        visible={true}
+        height="80"
+        width="80"
+        color="#4fa94d"
+        ariaLabel="rings-loading"
+      />
+    </div>
+  );}
 
   // Validar si no se encuentra el paseo
   if (!paseo) {
@@ -55,9 +75,9 @@ const PaseoDetalle = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Detalles del Paseo</h1>
-      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div className="paseos">
+      <h1>Detalles del Paseo</h1>
+      <div className="detalles2">
         <p><strong>Fecha y Hora:</strong> {new Date(paseo.fecha_hora).toLocaleString()}</p>
         <p><strong>Ubicación:</strong> {paseo.ubicacion_inicio}</p>
         <p><strong>Precio:</strong> €{paseo.precio}</p>
@@ -66,7 +86,7 @@ const PaseoDetalle = () => {
       </div>
 
       {/* Mapa interactivo */}
-      <div className="map-container mb-4" style={{ height: "400px", width: "100%" }}>
+      <div className="mapita" style={{ height: "300px", width: "100%" }}>
         <MapContainer center={[0, 0]} zoom={13} style={{ height: "100%", width: "100%" }}>
           {/* Capa de mapa base */}
           <TileLayer

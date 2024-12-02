@@ -1,16 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Header.scss";
+import logo from "../../assets/tailtracks.png"; // Adjust the path based on your project structure
 
 const Header = () => {
   return (
     <header>
-      <h1>TailTracks</h1>
-      <nav className="nav"> 
+      <div className="logo-container">
+        <img src={logo} alt="TailTracks Logo" className="logo" />
+        <h1 className="cabesa">TailTracks</h1>
+      </div>
+      <nav className="nav">
         <Link to="/">Home</Link>
-        <Link to="/">Paseos</Link>
-        {/* <Link to="/signup">SignUp</Link>
-        <Link to="/signin">SignIn</Link> */}
+        {/* Add additional links as needed */}
       </nav>
     </header>
   );
